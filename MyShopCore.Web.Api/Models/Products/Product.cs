@@ -1,4 +1,4 @@
-﻿namespace MyShopCore.Web.Api.Models
+﻿namespace MyShopCore.Web.Api.Models.Products
 {
     public class Product : Audit
     {
@@ -8,6 +8,6 @@
         public decimal CostPrice { get; set; }
         public decimal SellingPrice { get; set; }
         public int OrderAfter { get; set; }
-        
+
     }
 }
