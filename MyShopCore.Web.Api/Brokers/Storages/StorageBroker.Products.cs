@@ -7,22 +7,38 @@ namespace MyShopCore.Web.Api.Brokers.Storages
     {
         public DbSet<Product> Products { get; set; }    
 
-        public ValueTask<Product> InsertProductAsync(Product product)
+        public async ValueTask<Product> InsertProductAsync(Product product)
         {
-            throw new NotImplementedException();
+            this.Entry(product).State = EntityState.Added;
+            await this.SaveChangesAsync();
+
+            return product;
         }
 
         public IQueryable<Product> SelectAllProducts()
         {
-            throw new NotImplementedException();
+            return this.Products.AsQueryable();
         }
-        public ValueTask<Product> SelectProductByIdAsync(Guid productId)
-        { throw new NotImplementedException(); }
+        public async ValueTask<Product> SelectProductByIdAsync(Guid productId)
+        { 
+            return await this.Products.FindAsync(productId);
+        }
 
-        public ValueTask<Product> UpdateProductAsync(Product product)
-        { throw new NotImplementedException(); }
+        public async ValueTask<Product> UpdateProductAsync(Product product)
+        {
+            this.Entry(product).State = EntityState.Modified;
+            await this.SaveChangesAsync();
 
-        public ValueTask<Product> DeleteProductAsync(Product product)
-        { throw new NotImplementedException(); }
+            return product;
+        }
+
+        public async ValueTask<Product> DeleteProductAsync(Product product)
+        { 
+            this.Entry(product).State = EntityState.Deleted;
+            await this.SaveChangesAsync();
+
+            return product;
+
+        }
     }
 }
