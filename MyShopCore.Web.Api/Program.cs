@@ -1,6 +1,7 @@
 using MyShopCore.Web.Api.Brokers.DateTimes;
 using MyShopCore.Web.Api.Brokers.Loggings;
 using MyShopCore.Web.Api.Brokers.Storages;
+using MyShopCore.Web.Api.Services.Foundations.Products;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddDbContext<StorageBroker>();
 builder.Services.AddTransient<IStorageBroker, StorageBroker>();
 builder.Services.AddTransient<ILoggingBroker, LoggingBroker>();
 builder.Services.AddTransient<IDateTimeBroker, DateTimeBroker>();
+builder.Services.AddTransient<IProductService, ProductService>();
 
 var app = builder.Build();
 
