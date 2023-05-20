@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyShopCore.Web.Api.Models.Products;
+using MyShopCore.Web.Api.Models.Products.Exceptions;
 using MyShopCore.Web.Api.Services.Foundations.Products;
 
 namespace MyShopCore.Web.Api.Controllers
@@ -26,13 +27,26 @@ namespace MyShopCore.Web.Api.Controllers
         [HttpGet("{id}", Name = "GetSingleProduct")]
         public async ValueTask<IActionResult> GetProductAsync(Guid id)
         {
-            var product = 
+            try
+            {
+                var product =
                 await this.productService.RetrieveProductByIdAsync(id);
 
-            if (product is null)
-                return NotFound();
+                return Ok(product);
+            } 
+            catch (InvalidProductIdException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NullProductException ex) 
+            { 
+                return NotFound(ex.Message);
+            }
 
-            return Ok(product);
+
+            
+
+            
         }
 
         [HttpPost]
@@ -42,6 +56,36 @@ namespace MyShopCore.Web.Api.Controllers
                 await this.productService.AddProductAsync(product);
 
             return Created("GetSingleProduct", newProduct);
+        }
+
+        [HttpPut]
+        public async ValueTask<IActionResult> PutProduct([FromBody] Product product)
+        {
+            var currentProduct = 
+                await this.productService.RetrieveProductByIdAsync(product.Id);
+
+            if (currentProduct is null)
+                return NotFound();
+
+            var updatedProduct = 
+                await this.productService.ModifyProductAsync(product);
+
+            return Ok(updatedProduct);
+        }
+
+        [HttpDelete]
+        public async ValueTask<IActionResult> DeleteProduct(Guid id)
+        {
+            var currentProduct =
+                await this.productService.RetrieveProductByIdAsync(id);
+
+            if(currentProduct is null)
+                return NotFound();
+
+            var deletedProduct =
+                await this.productService.RemoveProductAsync(currentProduct);
+
+            return NoContent();
         }
     }
 }

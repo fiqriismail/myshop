@@ -2,6 +2,7 @@
 using MyShopCore.Web.Api.Brokers.Loggings;
 using MyShopCore.Web.Api.Brokers.Storages;
 using MyShopCore.Web.Api.Models.Products;
+using MyShopCore.Web.Api.Models.Products.Exceptions;
 
 namespace MyShopCore.Web.Api.Services.Foundations.Products
 {
@@ -53,9 +54,24 @@ namespace MyShopCore.Web.Api.Services.Foundations.Products
             return this.storageBroker.SelectAllProducts();
         }
 
-        public async ValueTask<Product> RetrieveProductByIdAsync(Guid productId)
+        public async ValueTask<Product> RetrieveProductByIdAsync(Guid? productId)
         {
-            return await this.storageBroker.SelectProductByIdAsync(productId);
+            if (productId is null)
+            {
+                this.loggingBroker.LogWarning("Product id not supplied");
+                throw new InvalidProductIdException();
+            }
+                
+
+            var product =  
+                await this.storageBroker.SelectProductByIdAsync(productId.Value);
+
+            if (product is null)
+                throw new NullProductException();
+
+            return product;
+
+
         }
     }
 }
