@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyShopCore.Web.Api.Models.Products;
 using MyShopCore.Web.Api.Models.Products.Exceptions;
@@ -6,6 +7,7 @@ using MyShopCore.Web.Api.Services.Foundations.Products;
 
 namespace MyShopCore.Web.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
